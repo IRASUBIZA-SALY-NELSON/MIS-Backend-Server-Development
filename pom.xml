@@ -241,6 +241,9 @@
                 <version>3.2.5</version>
                 <configuration>
                     <skipTests>false</skipTests>
+                    <systemPropertyVariables>
+                        <spring.profiles.active>test</spring.profiles.active>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
 
@@ -257,7 +260,7 @@
             </plugin>
         </plugins>
     </build>
-
+    
     <!-- Profiles for different environments -->
     <profiles>
         <profile>
@@ -267,6 +270,12 @@
             </activation>
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <spring.profiles.active>test</spring.profiles.active>
             </properties>
         </profile>
         <profile>
