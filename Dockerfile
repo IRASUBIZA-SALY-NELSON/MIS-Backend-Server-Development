@@ -1,14 +1,13 @@
-# Use official OpenJDK 21 slim image
-FROM eclipse-temurin:21-jdk-jammy
-
-# Set working directory
+# Stage 1: Build the JAR
+FROM maven:3.9.4-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copy the built Spring Boot JAR
-COPY target/rca-mis-backend-1.0.0.jar app.jar
-
-# Expose the port your Spring Boot app uses
+# Stage 2: Run the app
+FROM eclipse-temurin:21-jdk-jammy
+WORKDIR /app
+COPY --from=build /app/target/rca-mis-backend-1.0.0.jar app.jar
 EXPOSE 8080
-
-# Run the Spring Boot JAR
 ENTRYPOINT ["java", "-jar", "app.jar"]
