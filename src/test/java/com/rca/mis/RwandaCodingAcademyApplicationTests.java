@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
         "spring.datasource.password=",
         "spring.jpa.hibernate.ddl-auto=create-drop",
         "spring.flyway.enabled=false",
+        "app.data.initialization.enabled=false",
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration",
         "app.jwt.secret=test-jwt-secret-key-for-testing-only-make-it-long-enough",
         "app.jwt.expiration=86400000",

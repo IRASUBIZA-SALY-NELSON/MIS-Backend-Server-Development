@@ -52,4 +52,9 @@ public interface AuthService {
      * Verify OTP for password reset
      */
     boolean verifyOTP(String email, String otp);
+
+    /**
+     * Register a new user
+     */
+    AuthResponse register(com.rca.mis.dto.request.RegisterRequest registerRequest);
 }

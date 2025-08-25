@@ -18,7 +18,7 @@ import java.util.List;
 @Table(name = "teachers")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"user", "teacherSubjects", "teacherClasses", "assessments", "gradedMarks"})
 public class Teacher extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)

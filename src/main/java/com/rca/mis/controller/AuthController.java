@@ -1,6 +1,7 @@
 package com.rca.mis.controller;
 
 import com.rca.mis.dto.request.LoginRequest;
+import com.rca.mis.dto.request.RegisterRequest;
 import com.rca.mis.dto.response.AuthResponse;
 import com.rca.mis.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,23 +29,30 @@ public class AuthController {
      * User login endpoint
      */
     @PostMapping("/login")
-    @Operation(summary = "User Login", description = "Authenticate user and return JWT tokens")
+    @Operation(summary = "User login", description = "Authenticate user and return JWT tokens")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
-            log.info("Login attempt for user: {}", loginRequest.getEmail());
-            
-            AuthResponse response = authService.login(loginRequest);
-            
-            log.info("Login successful for user: {}", loginRequest.getEmail());
-            return ResponseEntity.ok(response);
-            
+            AuthResponse authResponse = authService.login(loginRequest);
+            return ResponseEntity.ok(authResponse);
         } catch (Exception e) {
             log.error("Login failed for user: {}", loginRequest.getEmail(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(AuthResponse.builder()
-                            .accessToken(null)
-                            .refreshToken(null)
-                            .build());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    /**
+     * User registration endpoint
+     */
+    @PostMapping("/register")
+    @Operation(summary = "User registration", description = "Register a new user and return JWT tokens")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        try {
+            AuthResponse authResponse = authService.register(registerRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(authResponse);
+        } catch (Exception e) {
+            log.error("Registration failed for user: {}", registerRequest.getEmail(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(java.util.Map.of("error", e.getMessage()));
         }
     }
 

@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "parents")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"user", "studentParents"})
 public class Parent extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)

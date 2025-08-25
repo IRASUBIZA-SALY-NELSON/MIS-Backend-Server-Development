@@ -1,5 +1,7 @@
 package com.rca.mis.model.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.rca.mis.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -12,7 +14,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "user_profiles")
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"user"})
 public class UserProfile extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -104,8 +106,33 @@ public class UserProfile extends BaseEntity {
             this.displayName = displayName;
         }
 
+        @JsonValue
         public String getDisplayName() {
             return displayName;
+        }
+
+        /**
+         * Case-insensitive valueOf method for JSON deserialization
+         */
+        @JsonCreator
+        public static Gender fromString(String value) {
+            if (value == null || value.trim().isEmpty()) {
+                return null;
+            }
+            
+            String upperValue = value.trim().toUpperCase();
+            switch (upperValue) {
+                case "MALE":
+                    return MALE;
+                case "FEMALE":
+                    return FEMALE;
+                case "OTHER":
+                    return OTHER;
+                case "PREFER_NOT_TO_SAY":
+                    return PREFER_NOT_TO_SAY;
+                default:
+                    throw new IllegalArgumentException("Invalid gender value: " + value);
+            }
         }
     }
 }

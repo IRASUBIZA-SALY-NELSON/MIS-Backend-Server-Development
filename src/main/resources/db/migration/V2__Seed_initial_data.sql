@@ -153,7 +153,7 @@ INSERT INTO users (id, email, password_hash, status) VALUES
 (
     uuid_generate_v4(),
     'admin@rca.ac.rw',
-    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8KzKz6K', -- Admin@123
+    '$2a$12$xXbP/rOcf7fVvRcRPa2jxeGBnE.3sqAz0pHyQeX2duRT4x4OfNTT6', -- Admin@123
     'ACTIVE'
 );
 
@@ -185,7 +185,7 @@ INSERT INTO users (id, email, password_hash, status) VALUES
 (
     uuid_generate_v4(),
     'teacher@rca.ac.rw',
-    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8KzKz6K', -- Teacher@123
+    '$2a$12$muGPhsSVqMGFC1yopIyRxe80qy9P.55/otrWisQfcdQ.8wxEGOS0q', -- Teacher@123
     'ACTIVE'
 );
 
@@ -221,7 +221,7 @@ INSERT INTO users (id, email, password_hash, status) VALUES
 (
     uuid_generate_v4(),
     'student@rca.ac.rw',
-    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/8KzKz6K', -- Student@123
+    '$2a$12$TTbE0oNGFUQ2l49ofpg5wuTyP4BArf40KSFb.x.pv4FOuIch5HDWy', -- Student@123
     'ACTIVE'
 );
 
@@ -242,7 +242,7 @@ BEGIN
         
         -- Create student profile
         INSERT INTO user_profiles (user_id, first_name, last_name, phone, gender, date_of_birth) VALUES
-        (student_user_id, 'Jane', 'Smith', '+250 555 123 456', 'Female', '2006-03-15');
+        (student_user_id, 'Jane', 'Smith', '+250 555 123 456', 'FEMALE', '2006-03-15');
         
         -- Create student record
         INSERT INTO students (user_id, student_code, class_id, admission_date) VALUES

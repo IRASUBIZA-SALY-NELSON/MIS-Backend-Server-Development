@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table(name = "users")
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"profile", "notifications", "sentMessages", "receivedMessages"})
 public class User extends BaseEntity implements UserDetails {
 
     @Column(unique = true, nullable = false)

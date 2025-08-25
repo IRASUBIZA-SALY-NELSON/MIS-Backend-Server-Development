@@ -55,7 +55,8 @@ public class SecurityConfig {
                     "/actuator/health",
                     "/actuator/info"
                 ).permitAll()
-                // Admin endpoints
+                // Admin endpoints - temporarily allow fix-passwords endpoint
+                .requestMatchers("/admin/fix-passwords").permitAll()
                 .requestMatchers("/admin/**").hasRole("SUPER_ADMIN")
                 // All other requests require authentication
                 .anyRequest().authenticated()

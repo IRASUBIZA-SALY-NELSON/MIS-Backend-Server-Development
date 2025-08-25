@@ -1,9 +1,14 @@
 package com.rca.mis.service.impl;
 
 import com.rca.mis.dto.request.LoginRequest;
+import com.rca.mis.dto.request.RegisterRequest;
 import com.rca.mis.dto.response.AuthResponse;
 import com.rca.mis.model.user.User;
+import com.rca.mis.model.user.UserProfile;
+import com.rca.mis.model.user.Role;
+import com.rca.mis.model.user.UserStatus;
 import com.rca.mis.repository.UserRepository;
+import com.rca.mis.repository.RoleRepository;
 import com.rca.mis.service.AuthService;
 import com.rca.mis.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +36,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -276,6 +282,80 @@ public class AuthServiceImpl implements AuthService {
                 .status(user.getStatus().name())
                 .lastLoginAt(LocalDateTime.now().toString()) // You might want to store this in User entity
                 .build();
+    }
+
+    @Override
+    public AuthResponse register(RegisterRequest registerRequest) {
+        try {
+            // Check if user already exists
+            if (userRepository.existsByEmail(registerRequest.getEmail())) {
+                throw new RuntimeException("User with this email already exists");
+            }
+
+            // Get role
+            Role role = roleRepository.findByName(registerRequest.getRole())
+                    .orElseThrow(() -> new RuntimeException("Role not found: " + registerRequest.getRole()));
+
+            // Create user profile
+            UserProfile profile = new UserProfile();
+            profile.setFirstName(registerRequest.getFirstName());
+            profile.setLastName(registerRequest.getLastName());
+            profile.setPhone(registerRequest.getPhone());
+            profile.setAddress(registerRequest.getAddress());
+            profile.setDateOfBirth(registerRequest.getDateOfBirth());
+            if (registerRequest.getGender() != null && !registerRequest.getGender().trim().isEmpty()) {
+                try {
+                    UserProfile.Gender gender = UserProfile.Gender.fromString(registerRequest.getGender());
+                    profile.setGender(gender);
+                } catch (Exception e) {
+                    log.warn("Error processing gender value: {}, defaulting to null", registerRequest.getGender(), e);
+                    profile.setGender(null);
+                }
+            }
+            // Note: UserProfile doesn't have nationalId, emergencyContact, emergencyPhone fields
+            // These would need to be added to the UserProfile entity if required
+
+            // Create user
+            User user = new User();
+            user.setEmail(registerRequest.getEmail());
+            user.setPasswordHash(passwordEncoder.encode(registerRequest.getPassword()));
+            user.setStatus(UserStatus.ACTIVE);
+            user.setProfile(profile);
+            user.getRoles().add(role);
+
+            // Set profile reference to user
+            profile.setUser(user);
+
+            // Save user (cascade will save profile)
+            User savedUser = userRepository.save(user);
+
+            // Generate tokens
+            String accessToken = jwtUtil.generateAccessToken(savedUser);
+            String refreshToken = jwtUtil.generateRefreshToken(savedUser);
+
+            log.info("User registered successfully: {}", registerRequest.getEmail());
+
+            // Build response
+            return AuthResponse.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .expiresIn(jwtUtil.getTokenExpirationTime(accessToken))
+                    .user(buildUserInfo(savedUser))
+                    .roles(savedUser.getRoles().stream()
+                            .map(r -> r.getName())
+                            .collect(Collectors.toList()))
+                    .permissions(savedUser.getRoles().stream()
+                            .flatMap(r -> r.getPermissions() != null ? 
+                                    List.of(r.getPermissions().split(",")).stream() : 
+                                    List.<String>of().stream())
+                            .distinct()
+                            .collect(Collectors.toList()))
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Error during user registration for email: {}", registerRequest.getEmail(), e);
+            throw new RuntimeException("Registration failed: " + e.getMessage());
+        }
     }
 
     /**
