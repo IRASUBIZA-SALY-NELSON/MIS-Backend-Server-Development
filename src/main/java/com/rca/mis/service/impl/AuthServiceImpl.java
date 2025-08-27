@@ -359,6 +359,76 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    @Override
+    public Object getUserProfile(String username) {
+        log.info("Getting profile for user: {}", username);
+        
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        var profile = user.getProfile();
+        
+        // Return basic user profile information
+        java.util.Map<String, Object> profileMap = new java.util.HashMap<>();
+        profileMap.put("id", user.getId());
+        profileMap.put("email", user.getEmail());
+        profileMap.put("firstName", profile != null && profile.getFirstName() != null ? profile.getFirstName() : "");
+        profileMap.put("lastName", profile != null && profile.getLastName() != null ? profile.getLastName() : "");
+        profileMap.put("fullName", profile != null ? profile.getFullName() : user.getEmail());
+        profileMap.put("phoneNumber", profile != null && profile.getPhone() != null ? profile.getPhone() : "");
+        profileMap.put("address", profile != null && profile.getAddress() != null ? profile.getAddress() : "");
+        profileMap.put("dateOfBirth", profile != null && profile.getDateOfBirth() != null ? profile.getDateOfBirth().toString() : "");
+        profileMap.put("gender", profile != null && profile.getGender() != null ? profile.getGender().toString() : "");
+        profileMap.put("createdAt", user.getCreatedAt() != null ? user.getCreatedAt().toString() : "");
+        profileMap.put("updatedAt", user.getUpdatedAt() != null ? user.getUpdatedAt().toString() : "");
+        return profileMap;
+    }
+
+    @Override
+    public Object updateUserProfile(String username, java.util.Map<String, Object> profileData) {
+        log.info("Updating profile for user: {}", username);
+        
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        var profile = user.getProfile();
+        
+        // Create profile if it doesn't exist
+        if (profile == null) {
+            profile = new UserProfile();
+            profile.setUser(user);
+            user.setProfile(profile);
+        }
+        
+        // Update profile fields if provided
+        if (profileData.containsKey("firstName")) {
+            profile.setFirstName((String) profileData.get("firstName"));
+        }
+        if (profileData.containsKey("lastName")) {
+            profile.setLastName((String) profileData.get("lastName"));
+        }
+        if (profileData.containsKey("phoneNumber")) {
+            profile.setPhone((String) profileData.get("phoneNumber"));
+        }
+        if (profileData.containsKey("address")) {
+            profile.setAddress((String) profileData.get("address"));
+        }
+        if (profileData.containsKey("dateOfBirth")) {
+            profile.setDateOfBirth(java.time.LocalDate.parse((String) profileData.get("dateOfBirth")));
+        }
+        if (profileData.containsKey("gender")) {
+            String genderStr = (String) profileData.get("gender");
+            profile.setGender(UserProfile.Gender.fromString(genderStr));
+        }
+        
+        userRepository.save(user);
+        
+        log.info("Profile updated successfully for user: {}", username);
+        
+        // Return updated profile
+        return getUserProfile(username);
+    }
+
     /**
      * Generate reset token (placeholder implementation)
      */

@@ -219,6 +219,70 @@ public class AuthController {
     }
 
     /**
+     * Get user profile endpoint
+     */
+    @GetMapping("/profile")
+    @Operation(summary = "Get User Profile", description = "Get current user profile information")
+    public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            String token = extractTokenFromHeader(authorizationHeader);
+            
+            if (token == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            String username = authService.getUsernameFromToken(token);
+            if (username == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            // Get user profile from service
+            var userProfile = authService.getUserProfile(username);
+            
+            log.info("Profile retrieved successfully for user: {}", username);
+            return ResponseEntity.ok(userProfile);
+            
+        } catch (Exception e) {
+            log.error("Profile retrieval failed", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of("error", "Failed to retrieve profile"));
+        }
+    }
+
+    /**
+     * Update user profile endpoint
+     */
+    @PutMapping("/profile")
+    @Operation(summary = "Update User Profile", description = "Update current user profile information")
+    public ResponseEntity<?> updateProfile(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody java.util.Map<String, Object> profileData) {
+        try {
+            String token = extractTokenFromHeader(authorizationHeader);
+            
+            if (token == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            String username = authService.getUsernameFromToken(token);
+            if (username == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
+            // Update user profile
+            var updatedProfile = authService.updateUserProfile(username, profileData);
+            
+            log.info("Profile updated successfully for user: {}", username);
+            return ResponseEntity.ok(updatedProfile);
+            
+        } catch (Exception e) {
+            log.error("Profile update failed", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(java.util.Map.of("error", e.getMessage()));
+        }
+    }
+
+    /**
      * Health check endpoint for authentication service
      */
     @GetMapping("/health")

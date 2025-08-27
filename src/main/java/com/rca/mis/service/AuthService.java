@@ -57,4 +57,14 @@ public interface AuthService {
      * Register a new user
      */
     AuthResponse register(com.rca.mis.dto.request.RegisterRequest registerRequest);
+
+    /**
+     * Get user profile information
+     */
+    Object getUserProfile(String username);
+
+    /**
+     * Update user profile information
+     */
+    Object updateUserProfile(String username, java.util.Map<String, Object> profileData);
 }
