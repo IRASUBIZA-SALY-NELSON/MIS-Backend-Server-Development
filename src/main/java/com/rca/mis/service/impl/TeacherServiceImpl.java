@@ -72,8 +72,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Teacher> findByEmail(String email) {
-        // Temporarily disabled - return empty for now
-        return Optional.empty();
+        return teacherRepository.findByUser_Email(email);
     }
 
     @Override
@@ -103,22 +102,19 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Transactional(readOnly = true)
     public List<Teacher> findByNameContaining(String name) {
-        // Temporarily disabled - return empty list
-        return List.of();
+        return teacherRepository.findByNameContaining(name);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Teacher> findByQualificationContaining(String qualification) {
-        // Temporarily disabled - return empty list
-        return List.of();
+        return teacherRepository.findByQualificationContaining(qualification);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Teacher> findBySpecializationContaining(String specialization) {
-        // Temporarily disabled - return empty list
-        return List.of();
+        return teacherRepository.findBySpecializationContaining(specialization);
     }
 
     @Override
@@ -187,21 +183,18 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Transactional(readOnly = true)
     public List<String> getAllDepartments() {
-        // Temporarily disabled - return empty list
-        return List.of();
+        return teacherRepository.findAllDepartments();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<String> getAllQualifications() {
-        // Temporarily disabled - return empty list
-        return List.of();
+        return teacherRepository.findAllQualifications();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<String> getAllSpecializations() {
-        // Temporarily disabled - return empty list
-        return List.of();
+        return teacherRepository.findAllSpecializations();
     }
 }

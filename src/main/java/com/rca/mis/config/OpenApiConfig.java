@@ -37,7 +37,7 @@ public class OpenApiConfig {
         return new Info()
                 .title("EAGLE SECONDARY SCHOOL's MIS API")
                 .description("""
-                    Rwanda Coding Academy Management Information System (RCA MIS) API
+                    Eagle Secondary School Management Information System (EAGLE MIS) API
                     
                     This API provides comprehensive management capabilities for:
                     - User Management & Authentication
