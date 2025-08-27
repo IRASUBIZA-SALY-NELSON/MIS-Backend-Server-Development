@@ -36,7 +36,7 @@ public class SimpleAuthServiceImpl implements AuthService {
         }
         
         User user = userOpt.get();
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
             throw new RuntimeException("Invalid credentials");
         }
         
@@ -149,7 +149,7 @@ public class SimpleAuthServiceImpl implements AuthService {
         }
         
         User user = userOpt.get();
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
             throw new RuntimeException("Current password is incorrect");
         }
         
