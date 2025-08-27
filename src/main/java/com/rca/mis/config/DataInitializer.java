@@ -12,7 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
  * Data initializer to seed essential data when the application starts
  */
 @Slf4j
-@Component
+// Temporarily disabled to get server running
+// @Component
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "app.data.initialization.enabled", havingValue = "true", matchIfMissing = true)
 public class DataInitializer implements CommandLineRunner {

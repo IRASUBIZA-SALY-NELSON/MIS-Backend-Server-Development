@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service;
  * Custom user details service for Spring Security
  */
 @Slf4j
-@Service
+// Temporarily disabled - requires full Spring Security
+// @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 

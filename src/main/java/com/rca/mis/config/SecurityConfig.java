@@ -28,9 +28,10 @@ import java.util.List;
 /**
  * Security configuration for the application
  */
-@Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
+// Temporarily disabled - using MinimalSecurityConfig instead
+// @Configuration
+// @EnableWebSecurity
+// @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 

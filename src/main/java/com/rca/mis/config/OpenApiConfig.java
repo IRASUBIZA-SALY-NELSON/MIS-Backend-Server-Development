@@ -35,7 +35,7 @@ public class OpenApiConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("RCA MIS API")
+                .title("EAGLE SECONDARY SCHOOL's MIS API")
                 .description("""
                     Rwanda Coding Academy Management Information System (RCA MIS) API
                     

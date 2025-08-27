@@ -29,9 +29,10 @@ import java.util.stream.Collectors;
 /**
  * Implementation of authentication service
  */
-@Slf4j
-@Service
+// Temporarily disabled - using SimpleAuthServiceImpl instead
+// @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
